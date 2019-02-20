@@ -16,10 +16,9 @@
       "name": "Scrypted Visual Studio Code Sample Library",
       "type": "Library"
    },
-   "devDependencies": {
-      "scrypted-deploy": "^1.3.5"
-   },
+   "devDependencies": {},
    "dependencies": {
+      "@scrypted/sdk": "0.0.1",
       "axios": "^0.18.0"
    }
 }
