@@ -1,7 +1,10 @@
-// 1) Create a new Script under Plugins
+// 1) Create a new Script under Plugins.
 // 2) Set the type to Device.
-// 3) Select the OnOff interface.
+// 3) Select/check the OnOff interface.
+// 4) Click the Debug button.
 // 4) Save.
+// 5) Edit .vcode/settings.json and set the value of "scrypted.debugHost": "THIS.IS.MY.IP"
+// 6) Launch Scrypted Debugger in VS Code.
 
 import axios from 'axios';
 
