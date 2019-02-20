@@ -1,23 +1,38 @@
+// 1) Create a new Script under Plugins
+// 2) Set the type to Device.
+// 3) Select the OnOff interface.
+// 4) Save.
+
 import axios from 'axios';
 
-log.i('Hello World');
-log.i('Babel polyfills Promise for us.');
-log.i('setTimeout is implemented by the Android host.');
+log.i('Hello World. This will create a virtual OnOff device.');
 
-function wait(ms) {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, ms);
-    })
+function Device() {
 }
 
-async function main() {
-    await wait(50);
-    log.i('done waiting for 50ms.');
-    log.i('XMLHttpRequest is polyfilled by the Android host. This allows the popular http library axios or jquery ajax to work.');
+Device.prototype.isOn = function () {
+    log.i('isOn was called!');
+    return false;
+};
 
-    const ip = await axios.get('http://jsonip.com');
-    log.i(`my ip: ${ip.data.ip}`);
-}
-main();
+Device.prototype.turnOff = function () {
+    // set a breakpoint here.
+    log.i('turnOff was called!');
+};
 
-log.i('The script will exit, but the async function will continue.');
+Device.prototype.turnOn = function () {
+    // set a breakpoint here.
+    log.i('turnOn was called!');
+
+    // turnOn must return immediately, but it can trigger other things... 
+    (async function () {
+        log.i('XMLHttpRequest is polyfilled by the Android host. This allows the popular http library axios or jquery ajax to work.');
+
+        const ip = await axios.get('http://jsonip.com');
+        log.i(`my ip: ${ip.data.ip}`);
+    })();
+};
+
+
+
+exports.default = new Device();
