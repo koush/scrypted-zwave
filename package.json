@@ -13,11 +13,14 @@
       "plugin"
    ],
    "scrypted": {
-      "name": "Scrypted Visual Studio Code Sample Library",
-      "type": "Library"
+      "name": "JavaScript Light",
+      "type": "Device",
+      "interfaces": [
+         "OnOff"
+      ]
    },
    "devDependencies": {
-      "@scrypted/sdk": "0.0.2"
+      "@scrypted/sdk": "0.0.9"
    },
    "dependencies": {
       "axios": "^0.18.0"
