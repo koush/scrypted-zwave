@@ -1,18 +1,15 @@
 // https://developer.scrypted.app/#getting-started
 import axios from 'axios';
 import sdk from "@scrypted/sdk";
-const { log, deviceManager } = sdk;
+const { log, DeviceState } = sdk;
 
 log.i('Hello World. This will create a virtual OnOff device.');
 
-class Device {
-    constructor() {
-        this._state = deviceManager.getDeviceState();
-    }
+class Device extends DeviceState {
     turnOff() {
         // set a breakpoint here.
         log.i('turnOff was called!');
-        this._state.on = false;
+        this.on = false;
     }
     async turnOn() {
         // set a breakpoint here.
@@ -22,7 +19,7 @@ class Device {
         const ip = await axios.get('http://jsonip.com');
         log.i(`my ip: ${ip.data.ip}`);
 
-        this._state.on = true;
+        this.on = true;
     }
 }
 
