@@ -16,16 +16,14 @@
       "name": "JavaScript Light",
       "type": "Device",
       "interfaces": [
-         "OnOff"
-      ],
-      "events": [
-         "OnOff"
+         "DeviceProvider"
       ]
    },
    "devDependencies": {
-      "@scrypted/sdk": "0.0.19"
+      "@scrypted/sdk": "0.0.21"
    },
    "dependencies": {
-      "axios": "^0.18.0"
+      "axios": "^0.18.0",
+      "lodash.debounce": "^4.0.8"
    }
 }
