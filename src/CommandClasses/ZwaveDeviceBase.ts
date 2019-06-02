@@ -2,7 +2,7 @@ import { ScryptedDeviceBase, ZwaveValueId, Device, Refresh } from "../../../scry
 import sdk from "@scrypted/sdk";
 const {zwaveManager} = sdk;
 import {Node, getInstanceHash, Instance} from "../Types";
-import { CommandClassInfo, getCommandClassIndex } from ".";
+import { CommandClassInfo, getCommandClassIndex, getCommandClass } from ".";
 import { ZwaveController, NodeLiveness } from "../main";
 
 export class ZwaveFunction extends Function {
@@ -11,6 +11,8 @@ export class ZwaveFunction extends Function {
 
     onValueChanged?(zwaveDevice: ZwaveDeviceBase, valueId: ZwaveValueId) {
     }
+
+    getInterfaces?: Function;
 }
 
 export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
@@ -39,6 +41,9 @@ export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
 
     onValueChanged(valueId: ZwaveValueId) {
         var cc = getCommandClassIndex(valueId.commandClass, valueId.index);
+        if (!cc) {
+            cc = getCommandClass(valueId.commandClass);
+        }
         if (!cc) {
             return;
         }
@@ -77,7 +82,7 @@ export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
         this.zwaveController.updateNodeLiveness(this, NodeLiveness.Query);
 
         for (var commandClass of this.commandClasses) {
-            if (refreshInterface != null && !commandClass.interfaces.includes(refreshInterface)) {
+            if (refreshInterface != null && !commandClass._interfaces.includes(refreshInterface)) {
                 continue;
             }
 
@@ -88,5 +93,23 @@ export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
             valueId.instance = this.instance.id;
             zwaveManager.refreshValue(valueId);
         }
+    }
+
+    getValueList(valueId: ZwaveValueId): Map<string, number> {
+        var ret = new Map<string, number>();
+        var keys: string[] = zwaveManager.getValueListItems(valueId);
+        var values: number[] = zwaveManager.getValueListValues(valueId);
+        if (keys.length != values.length)
+            return ret;
+
+        for (var i = 0; i < keys.length; i++) {
+            ret.set(keys[i], values[i]);
+        }
+
+        return ret;
+    }
+
+    getValueListValue(valueId: ZwaveValueId): number {
+        return this.getValueList(valueId).get(this.getValue(valueId));
     }
 }

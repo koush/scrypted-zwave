@@ -1,13 +1,13 @@
 import {OnOff, ZwaveValueId} from "@scrypted/sdk";
 import { ZwaveDeviceBase } from "./ZwaveDeviceBase";
 
-export class Switch extends ZwaveDeviceBase implements OnOff {
+export class OnOffToSwitch extends ZwaveDeviceBase implements OnOff {
     turnOff(): void {
-        this.setValue(Switch, 'false');
+        this.setValue(OnOffToSwitch, 'false');
     }
 
     turnOn(): void {
-        this.setValue(Switch, 'true');
+        this.setValue(OnOffToSwitch, 'true');
     }
 
     static onValueChanged(zwaveDevice: ZwaveDeviceBase, valueId: ZwaveValueId) {
@@ -15,4 +15,4 @@ export class Switch extends ZwaveDeviceBase implements OnOff {
     }
 }
 
-export default Switch;
+export default OnOffToSwitch;

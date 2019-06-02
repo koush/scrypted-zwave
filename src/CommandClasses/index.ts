@@ -1,8 +1,8 @@
-import Switch from "./OnOffToSwitch";
+import OnOffToSwitch from "./OnOffToSwitch";
 import BrightnessToSwitchMultilevel from "./BrightnessToSwitchMultilevel";
-import { ZwaveValueId } from "../../../scrypted-deploy";
+import { ZwaveValueId } from "@scrypted/sdk";
 import { ZwaveFunction } from "./ZwaveDeviceBase";
-import OnOffToSwitch from "./BinarySensorToStateSensor";
+import BinarySensorToStateSensor from "./BinarySensorToStateSensor";
 import LockToDoorLock from "./LockToDoorLock";
 import BatteryToBattery from "./BatteryToBattery";
 import ThermometerToSensorMultilevel from "./ThermometerToSensorMultilevel";
@@ -10,12 +10,24 @@ import HumidityToSensorMultilevel from "./HumiditySensorToSensorMultilevel";
 import LuminanceSensorToSensorMultilevel from "./LuminanceSensorToSensorMultilevel";
 import UltravioletSensorMultilevel from "./UltravioletSensorToSensorMultilevel";
 import SettingsToConfiguration from "./SettingsToConfiguration";
+import EntryToGarageDoor from "./EntryToGarageDoor";
+import ColorSettingRgbToColor from "./ColorSettingRgbToColor";
+import { NotificationType } from "./Notification";
+import { EntrySensorToAccessControl } from "./EntrySensorToAccessControl";
+import { FloodSensorToWaterAlarm } from "./FloodSensorToWaterAlarm";
 
 var CommandClassMap = {};
 
 export class CommandClassInfo {
     clazz: ZwaveFunction;
-    interfaces: string[];
+    _interfaces: string[];
+
+    getInterfaces(valueId: ZwaveValueId) {
+        if (this.clazz.getInterfaces) {
+            return this.clazz.getInterfaces(valueId);
+        }
+        return this._interfaces;
+    }
 }
 
 function addCommandClassIndex(commandClass: number, index: number, clazz: Function, ...interfaces: string[]) {
@@ -29,7 +41,7 @@ function addCommandClassIndex(commandClass: number, index: number, clazz: Functi
     zwaveClass.valueId = valueId; 
 
     cc.clazz = zwaveClass;
-    cc.interfaces = interfaces;
+    cc._interfaces = interfaces;
     CommandClassMap[`${commandClass}#${index}`] = cc;
 }
 
@@ -43,7 +55,7 @@ function addCommandClass(commandClass: number, clazz: Function, ...interfaces: s
     zwaveClass.valueId = valueId; 
 
     cc.clazz = zwaveClass;
-    cc.interfaces = interfaces;
+    cc._interfaces = interfaces;
     CommandClassMap[`${commandClass}`] = cc;
 }
 
@@ -92,14 +104,20 @@ enum SensorType
     SensorType_MaxType
 }
 
-addCommandClassIndex(0x25, 0, Switch, 'OnOff');
+addCommandClassIndex(0x25, 0, OnOffToSwitch, 'OnOff');
 addCommandClassIndex(0x26, 0, BrightnessToSwitchMultilevel, 'Brightness', 'OnOff');
-addCommandClassIndex(0x30, 0, OnOffToSwitch, 'BinarySensor');
+addCommandClassIndex(0x33, 0, ColorSettingRgbToColor, 'ColorSettingRgb', 'ColorSettingTemperature');
+addCommandClassIndex(0x30, 0, BinarySensorToStateSensor, 'BinarySensor');
 addCommandClassIndex(0x62, 0, LockToDoorLock, 'Lock');
 addCommandClassIndex(0x80, 0, BatteryToBattery, 'Battery');
+addCommandClassIndex(0x66, 1, EntryToGarageDoor, 'Entry');
 addCommandClassIndex(0x31, SensorType.SensorType_Temperature, ThermometerToSensorMultilevel, 'Thermometer');
 addCommandClassIndex(0x31, SensorType.SensorType_RelativeHumidity, HumidityToSensorMultilevel, 'HumiditySensor');
 addCommandClassIndex(0x31, SensorType.SensorType_Luminance, LuminanceSensorToSensorMultilevel, 'LuminanceSensor');
 addCommandClassIndex(0x31, SensorType.SensorType_Ultraviolet, UltravioletSensorMultilevel, 'UltravioletSensor');
+
+addCommandClassIndex(0x71, NotificationType.AccessControl, EntrySensorToAccessControl, 'EntrySensor');
+addCommandClassIndex(0x71, NotificationType.WaterAlarm, FloodSensorToWaterAlarm, 'FloodSensor');
+addCommandClassIndex(0x71, NotificationType.HomeSecurity, FloodSensorToWaterAlarm, 'IntrusionSensor');
 
 addCommandClass(0x70, SettingsToConfiguration, 'Settings');

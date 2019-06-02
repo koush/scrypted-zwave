@@ -1,4 +1,4 @@
-import { ZwaveValueId } from "../../scrypted-deploy";
+import { EntrySensor, ZwaveValueId } from "@scrypted/sdk";
 import EnsureMap from "./EnsureMap";
 
 export class CommandClass {

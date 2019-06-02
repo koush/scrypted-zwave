@@ -1,7 +1,7 @@
 // https://developer.scrypted.app/#getting-started
 import sdk, { DeviceProvider, EventDetails, ScryptedDevice, ZwaveNotification, ZwaveNotificationType, ZwaveValueId } from "@scrypted/sdk";
-import { getCommandClassIndex, CommandClassInfo, getCommandClass } from "./cc";
-import { ZwaveDeviceBase } from "./cc/ZwaveDeviceBase";
+import { getCommandClassIndex, CommandClassInfo, getCommandClass } from "./CommandClasses";
+import { ZwaveDeviceBase } from "./CommandClasses/ZwaveDeviceBase";
 import { CommandClass, getInstanceHash, Home, Homes, Node, NodeMap, getNodeHash, Instance } from "./Types";
 const { log, zwaveManager, deviceManager } = sdk;
 import debounce from "lodash.debounce";
@@ -104,7 +104,11 @@ export class ZwaveController implements DeviceProvider {
         }
     }
 
-    _addType(updatedDevices, instance: Instance, type: CommandClassInfo) {
+    _addType(updatedDevices, instance: Instance, type: CommandClassInfo, valueId: ZwaveValueId) {
+        var interfaces = type.getInterfaces(valueId);
+        if (!interfaces) {
+            return;
+        }
 
         var methods = Reflect.ownKeys(type.clazz.prototype).filter(v => v != 'constructor');
 
@@ -123,7 +127,8 @@ export class ZwaveController implements DeviceProvider {
         for (var m of methods) {
             scryptedDevice[m] = type.clazz.prototype[m];
         }
-        scryptedDevice.device.interfaces.push(...type.interfaces);
+
+        scryptedDevice.device.interfaces.push(...interfaces);
         scryptedDevice.commandClasses.push(type);
     }
 
@@ -136,7 +141,7 @@ export class ZwaveController implements DeviceProvider {
 
             var type = getCommandClass(cc.id);
             if (type) {
-                this._addType(updatedDevices, instance, type);
+                this._addType(updatedDevices, instance, type, null);
                 continue;
             }
 
@@ -146,7 +151,7 @@ export class ZwaveController implements DeviceProvider {
                     continue;
                 }
 
-                this._addType(updatedDevices, instance, type);
+                this._addType(updatedDevices, instance, type, value);
             }
         }
 
