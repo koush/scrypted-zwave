@@ -69,7 +69,7 @@ export class ZwaveController implements DeviceProvider {
                 .getOrCreate(valueId.nodeId)
                 .getOrCreate(valueId.instance);
 
-                instance
+                delete instance
                 .getOrCreate(valueId.commandClass).valueIds[valueId.index];
 
                 dirty[dirtyKey] = instance;

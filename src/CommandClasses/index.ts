@@ -15,6 +15,8 @@ import ColorSettingRgbToColor from "./ColorSettingRgbToColor";
 import { NotificationType } from "./Notification";
 import { EntrySensorToAccessControl } from "./EntrySensorToAccessControl";
 import { FloodSensorToWaterAlarm } from "./FloodSensorToWaterAlarm";
+import { PasswordStoreToUserCode } from "./PasswordStoreToUserCode";
+import { IntrusionSensorToHomeSecurity } from "./IntrusionSensorToHomeSecurity";
 
 var CommandClassMap = {};
 
@@ -118,6 +120,7 @@ addCommandClassIndex(0x31, SensorType.SensorType_Ultraviolet, UltravioletSensorM
 
 addCommandClassIndex(0x71, NotificationType.AccessControl, EntrySensorToAccessControl, 'EntrySensor');
 addCommandClassIndex(0x71, NotificationType.WaterAlarm, FloodSensorToWaterAlarm, 'FloodSensor');
-addCommandClassIndex(0x71, NotificationType.HomeSecurity, FloodSensorToWaterAlarm, 'IntrusionSensor');
+addCommandClassIndex(0x71, NotificationType.HomeSecurity, IntrusionSensorToHomeSecurity, 'IntrusionSensor');
 
 addCommandClass(0x70, SettingsToConfiguration, 'Settings');
+addCommandClass(0x63, PasswordStoreToUserCode, 'PasswordStore');

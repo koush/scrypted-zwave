@@ -35,6 +35,10 @@ export class FloodSensorToWaterAlarm extends Notification implements FloodSensor
             return;
         }
 
+        if (!zwaveDevice.device.interfaces.includes('FloodSensor')) {
+            return;
+        }
+
         zwaveDevice.flooded = !this.floodStates.includes(state);
     }
 }

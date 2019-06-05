@@ -1,4 +1,9 @@
 {
+   "name": "@scrypted/zwave",
+   "version": "0.0.1",
+   "description": "Z-Wave USB Controller for Scrypted",
+   "author": "Scrypted",
+   "license": "Apache",
    "scripts": {
       "prepublishOnly": "NODE_ENV=production scrypted-webpack",
       "prescrypted-vscode-launch": "scrypted-webpack",
@@ -13,8 +18,9 @@
       "plugin"
    ],
    "scrypted": {
-      "name": "JavaScript Light",
+      "name": "Z-Wave Controller",
       "type": "Device",
+      "singleInstance": true,
       "interfaces": [
          "DeviceProvider"
       ]

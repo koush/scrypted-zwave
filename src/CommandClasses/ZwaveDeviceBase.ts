@@ -26,13 +26,24 @@ export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
         this.instance = instance;
     }
 
-    setValue(clazz: ZwaveFunction, value: string) {
+    getValueId(): ZwaveValueId {
         var valueId: ZwaveValueId = {};
-        Object.assign(valueId, clazz.valueId);
         valueId.homeId = this.instance.node.home.id;
         valueId.nodeId = this.instance.node.id;
         valueId.instance = this.instance.id;
+        return valueId;
+    }
+
+    setValue(clazz: ZwaveFunction, value: string) {
+        var valueId = this.getValueId();
+        Object.assign(valueId, clazz.valueId);
         zwaveManager.setValue(valueId, value);
+    }
+
+    setValueRaw(clazz: ZwaveFunction, value: Buffer) {
+        var valueId = this.getValueId();
+        Object.assign(valueId, clazz.valueId);
+        zwaveManager.setValueRaw(valueId, value);
     }
 
     getValue(valueId: ZwaveValueId): string {

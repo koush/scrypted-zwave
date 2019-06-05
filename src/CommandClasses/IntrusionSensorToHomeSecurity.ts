@@ -1,4 +1,4 @@
-import { ZwaveValueId, FloodSensor } from "@scrypted/sdk";
+import { ZwaveValueId, FloodSensor, IntrusionSensor } from "@scrypted/sdk";
 import { Notification } from "./Notification";
 import { ZwaveDeviceBase } from "./ZwaveDeviceBase";
 
@@ -15,10 +15,14 @@ enum HomeSecurityState {
     ImpactDetected
 }
 
-export class FloodSensorToWaterAlarm extends Notification implements FloodSensor {
+export class IntrusionSensorToHomeSecurity extends Notification implements IntrusionSensor {
     static onValueChanged(zwaveDevice: ZwaveDeviceBase, valueId: ZwaveValueId) {
         var state = zwaveDevice.getValueListValue(valueId);
         if (state === undefined) {
+            return;
+        }
+
+        if (!zwaveDevice.device.interfaces.includes('IntrusionSensor')) {
             return;
         }
 

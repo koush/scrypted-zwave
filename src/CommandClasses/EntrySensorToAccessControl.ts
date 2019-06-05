@@ -95,9 +95,14 @@ export class EntrySensorToAccessControl extends Notification implements EntrySen
             return;
         }
 
-        // if (!EntrySensorToAccessControl.entryStates.includes(state) || !zwaveDevice.device.interfaces.includes('EntrySensor')) {
+        // should we check explictly for entry sensor states?
+        // if (!EntrySensorToAccessControl.entryStates.includes(state)) {
         //     return;
         // }
+
+        if (!zwaveDevice.device.interfaces.includes('EntrySensor')) {
+            return;
+        }
 
         zwaveDevice.entryOpen = !this.closedStates.includes(state);
     }
