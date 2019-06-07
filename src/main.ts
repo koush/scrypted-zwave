@@ -94,7 +94,12 @@ export class ZwaveController implements DeviceProvider {
         var dirty = {};
 
         for (var notification of eventData) {
-            this.parseNotification(notification, dirty);
+            try {
+                this.parseNotification(notification, dirty);
+            }
+            catch (e) {
+                log.e(`error parsing zwave notification: ${e}`)
+            }
         }
         
         var instances: Instance[] = Object.values(dirty);
