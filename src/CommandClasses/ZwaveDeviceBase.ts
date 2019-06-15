@@ -15,11 +15,16 @@ export class ZwaveFunction extends Function {
     getInterfaces?: Function;
 }
 
+export class TransientState {
+    lockJammed?: boolean;
+}
+
 export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
     instance: Instance;
     device: Device;
     commandClasses: CommandClassInfo[] = [];
     zwaveController: ZwaveController;
+    transientState: TransientState = {};
 
     constructor(instance: Instance) {
         super(getInstanceHash(instance.node.home.id, instance.node.id, instance.id));

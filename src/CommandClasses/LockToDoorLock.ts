@@ -9,7 +9,8 @@ export class LockToDoorLock extends ZwaveDeviceBase implements Lock {
         this.setValue(LockToDoorLock, "false");
     }
     static onValueChanged(zwaveDevice: ZwaveDeviceBase, valueId: ZwaveValueId) {
-        zwaveDevice.lockState = zwaveDevice.getValueBoolean(valueId) ? LockState.Locked : LockState.Unlocked;
+        zwaveDevice.lockState = zwaveDevice.getValueBoolean(valueId) ? LockState.Locked :
+            zwaveDevice.transientState.lockJammed ? LockState.Jammed : LockState.Unlocked;
     }
 }
 
