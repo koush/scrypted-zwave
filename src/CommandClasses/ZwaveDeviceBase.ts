@@ -1,4 +1,4 @@
-import { ScryptedDeviceBase, ZwaveValueId, Device, Refresh } from "../../../scrypted-deploy";
+import { ScryptedDeviceBase, ZwaveValueId, Device, Refresh } from "@scrypted/sdk";
 import sdk from "@scrypted/sdk";
 const {zwaveManager} = sdk;
 import {Node, getInstanceHash, Instance} from "../Types";
