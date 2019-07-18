@@ -1,6 +1,6 @@
-import sdk, { ScryptedDeviceBase, PasswordStore, ZwaveValueId } from "@scrypted/sdk";
+import sdk, { PasswordStore, ZwaveValueId, ScryptedInterface } from "@scrypted/sdk";
 import { ZwaveFunction, ZwaveDeviceBase } from "./ZwaveDeviceBase";
-const {zwaveManager} = sdk;
+const {zwaveManager, deviceManager} = sdk;
 
 function isEmpty(str: string) {
     return !str || !str.length;
@@ -12,7 +12,7 @@ export class PasswordStoreToUserCode extends ZwaveDeviceBase implements Password
     static INDEX_ENROLLMENT_CODE = 0;
     static INDEX_USER_CODE_START = 1;
 
-    getPasswords(): Set<string> {
+    _getPasswords(): Set<string> {
         var ret = new Set<string>();
         for (var i = 0; i < this.getPasswordCount(); i++) {
             var password = this.getPassword(i);
@@ -22,6 +22,10 @@ export class PasswordStoreToUserCode extends ZwaveDeviceBase implements Password
             ret.add(password);
         }
         return ret;
+    }
+
+    getPasswords(): string[] {
+        return Array.from(this._getPasswords());
     }
 
     getPasswordCount(): number {
@@ -73,8 +77,6 @@ export class PasswordStoreToUserCode extends ZwaveDeviceBase implements Password
     }
 
     addPassword(password: string): void {
-        var passwords = this.getPasswords();
-
         for (var i = 0; i < this.getPasswordCount(); i++) {
             var existing = this.getPassword(i);
             if (isEmpty(existing) || password === existing) {
@@ -85,8 +87,7 @@ export class PasswordStoreToUserCode extends ZwaveDeviceBase implements Password
             }
         }
 
-        passwords.add(password);
-        this.passwords = Array.from(passwords);
+        this.notifyChange();
     }
     setPassword(index: number, password: string) {
         var valueId: ZwaveValueId = this.getValueId()
@@ -94,12 +95,9 @@ export class PasswordStoreToUserCode extends ZwaveDeviceBase implements Password
         Object.assign(valueId, f.valueId);
         valueId.index = PasswordStoreToUserCode.INDEX_USER_CODE_START + index;
 
-        // zwaveManager.setValue(valueId, PasswordStoreToUserCode.stringToRaw(password));
         zwaveManager.setValueRaw(valueId, Buffer.from(password));
     }
     removePassword(password: string): void {
-        var passwords = this.getPasswords();
-
         for (var i = 0; i < this.getPasswordCount(); i++) {
             var existing = this.getPassword(i);
             if (password === existing) {
@@ -108,15 +106,16 @@ export class PasswordStoreToUserCode extends ZwaveDeviceBase implements Password
             }
         }
 
-        passwords.delete(password);
-        this.passwords = Array.from(passwords);
+        this.notifyChange();
     }
     checkPassword(password: string): boolean {
-        return this.getPasswords().has(password);
+        return this._getPasswords().has(password);
+    }
+    notifyChange() {
+        deviceManager.onDeviceEvent(ScryptedInterface.PasswordStore, null);
     }
     static onValueChanged(zwaveDevice: ZwaveDeviceBase, valueId: ZwaveValueId) {
         var pass = zwaveDevice as PasswordStoreToUserCode;
-        pass.passwords = Array.from(pass.getPasswords());
-        return null;
+        pass.notifyChange();
     }
 }

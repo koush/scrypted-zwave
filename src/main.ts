@@ -1,5 +1,5 @@
 // https://developer.scrypted.app/#getting-started
-import sdk, { DeviceProvider, EventDetails, ScryptedDevice, ZwaveNotification, ZwaveNotificationType, ZwaveValueId } from "@scrypted/sdk";
+import sdk, { DeviceProvider, EventDetails, ScryptedDevice, ZwaveNotification, ZwaveNotificationType, ZwaveValueId, ScryptedInterface } from "@scrypted/sdk";
 import { getCommandClassIndex, CommandClassInfo, getCommandClass } from "./CommandClasses";
 import { ZwaveDeviceBase } from "./CommandClasses/ZwaveDeviceBase";
 import { CommandClass, getInstanceHash, Home, Homes, Node, NodeMap, getNodeHash, Instance } from "./Types";
@@ -167,6 +167,8 @@ export class ZwaveController implements DeviceProvider {
             }
             scryptedDevice.device.interfaces.push('Refresh', 'Online');
             deviceManager.onDeviceDiscovered(scryptedDevice.device);
+            // todo: watch for name change and sync to zwave controller
+            zwaveManager.setNodeName(instance.node.home.id, instance.node.id, scryptedDevice.name);
         }
     }
 
@@ -242,15 +244,6 @@ export class ZwaveController implements DeviceProvider {
 
 const zwaveController: ZwaveController = new ZwaveController();
 
-// TODO: json coerced javascript objects seem to be coming down the pipe with __java_this properties??
-// maybe beacuse the JavaScriptObject sent up to Java needs this?
-// should this be cleaned up to mark it as oneway, and the parsing is in C?
-const interfaces = zwaveManager.interfaces;
-
-// deviceManager.onDevicesChanged({
-//     devices: []
-// })
-
-zwaveManager.listen("ZwaveManager", zwaveController.onNotification.bind(zwaveController));
+zwaveManager.listen(ScryptedInterface.ZwaveM, zwaveController.onNotification.bind(zwaveController));
 
 export default zwaveController;

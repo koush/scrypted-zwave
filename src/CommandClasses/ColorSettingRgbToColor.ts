@@ -57,7 +57,7 @@ export class ColorSettingRgbToColor extends ZwaveDeviceBase implements ColorSett
     getTemperatureMinK(): number {
         return 2500;
     }
-    setTemperature(kelvin: number): void {
+    setColorTemperature(kelvin: number): void {
         if (kelvin < ColorSettingRgbToColor.avg) {
             var diff = kelvin - 2500;
             var dratio = diff / ColorSettingRgbToColor.deviation;
