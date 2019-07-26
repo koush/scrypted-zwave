@@ -84,6 +84,7 @@ export class EntrySensorToAccessControl extends Notification implements EntrySen
 
     static onValueChanged(zwaveDevice: ZwaveDeviceBase, valueId: ZwaveValueId) {
         var state = zwaveDevice.getValueListValue(valueId);
+        zwaveDevice.log.i(`Notification: ${state}`);
         if (state === undefined) {
             return;
         }
@@ -91,8 +92,10 @@ export class EntrySensorToAccessControl extends Notification implements EntrySen
         // schlage locks send notifications of lock change events, but does not change the actual lock command class value.
         // so force a refresh.
         if (EntrySensorToAccessControl.lockStates.includes(state)) {
+            zwaveDevice.log.i('Notifcation of lock state change, refreshing.');
             zwaveDevice.transientState.lockJammed = state == AccessControlEventState.LockJammed;
-            zwaveDevice.refresh('Lock', false);
+            // we ignore Refresh calls that are non user initiated, so this must be marked as such.
+            zwaveDevice.refresh('Lock', true);
             return;
         }
 

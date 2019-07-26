@@ -107,7 +107,7 @@ export class ZwaveDeviceBase extends ScryptedDeviceBase implements Refresh {
             valueId.homeId = this.instance.node.home.id;
             valueId.nodeId = this.instance.node.id;
             valueId.instance = this.instance.id;
-            if (!valueId.index) {
+            if (valueId.index === undefined || valueId.index === null) {
                 continue;
             }
             zwaveManager.refreshValue(valueId);
