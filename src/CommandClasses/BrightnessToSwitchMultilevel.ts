@@ -21,7 +21,6 @@ export class BrightnessToSwitchMultilevel extends ZwaveDeviceBase implements OnO
         this._polling = Date.now();
     }
 
-    _lastBrightness: number;
     _polling: number;
 
     _refresh(valueId: ZwaveValueId) {
@@ -36,13 +35,12 @@ export class BrightnessToSwitchMultilevel extends ZwaveDeviceBase implements OnO
         // dimmer devices may have a fade in/out. so poll the value until it settles (or 30 sec mac)
         // to watch for the on/off events. otherwise devices may get stuck in some mid-dim value.
         if (zwaveDevice._polling) {
-            if (brightness === zwaveDevice._lastBrightness || Date.now() > zwaveDevice._polling + 30000) {
+            if (Date.now() > zwaveDevice._polling + 30000) {
                 zwaveDevice._polling = undefined;
             }
             else {
                 zwaveDevice._refresh(valueId);
             }
-            zwaveDevice._lastBrightness = brightness;
         }
 
         if (brightness === 99) {
