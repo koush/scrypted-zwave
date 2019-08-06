@@ -165,7 +165,9 @@ export class ZwaveController implements DeviceProvider {
             if (!scryptedDevice.device.interfaces.length) {
                 return;
             }
-            scryptedDevice.device.interfaces.push('Refresh', 'Online');
+            // Refresh is problematic. Perhaps another method on Online to do a real health check.
+            // scryptedDevice.device.interfaces.push('Refresh', 'Online');
+            scryptedDevice.device.interfaces.push('Online');
             deviceManager.onDeviceDiscovered(scryptedDevice.device);
             // todo: watch for name change and sync to zwave controller
             zwaveManager.setNodeName(instance.node.home.id, instance.node.id, scryptedDevice.name);
@@ -244,6 +246,6 @@ export class ZwaveController implements DeviceProvider {
 
 const zwaveController: ZwaveController = new ZwaveController();
 
-zwaveManager.listen(ScryptedInterface.ZwaveM, zwaveController.onNotification.bind(zwaveController));
+zwaveManager.listen(null, zwaveController.onNotification.bind(zwaveController));
 
 export default zwaveController;
