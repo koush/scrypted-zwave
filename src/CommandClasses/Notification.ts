@@ -7,6 +7,7 @@ export enum NotificationType
     WaterAlarm = 5,
     AccessControl = 6,
     HomeSecurity = 7,
+    PowerManagement = 8,
 }
 
 export class Notification extends ZwaveDeviceBase {

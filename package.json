@@ -1,6 +1,6 @@
 {
    "name": "@scrypted/zwave",
-   "version": "0.0.8",
+   "version": "0.0.10",
    "description": "Z-Wave USB Controller for Scrypted",
    "author": "Scrypted",
    "license": "Apache",
@@ -26,7 +26,7 @@
       ]
    },
    "devDependencies": {
-      "@scrypted/sdk": "0.0.40"
+      "@scrypted/sdk": "0.0.59"
    },
    "dependencies": {
       "axios": "^0.19.0",
