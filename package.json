@@ -29,7 +29,7 @@
       "@scrypted/sdk": "0.0.59"
    },
    "dependencies": {
-      "axios": "^0.19.0",
+      "axios": "^0.21.1",
       "lodash.debounce": "^4.0.8"
    }
 }
